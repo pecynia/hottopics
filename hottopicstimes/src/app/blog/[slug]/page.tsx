@@ -1,14 +1,39 @@
-import { GetStaticProps, GetStaticPaths } from 'next';
 import Head from 'next/head';
-
 import db from '../../../utils/db'; 
 import ViewCounter from '../../../utils/ViewCounter';
-import { StoryPageProps } from '../../../types/story';
+import { Story, StoryPageProps } from '../../../types/story';
 
-export default function StoryPage({ story }: StoryPageProps) {
-  
-  console.log("story: ", story) // story:  undefined
 
+type Props = {
+  params: {
+    slug: string,
+  }
+}
+
+export const revalidate = 30
+
+export async function generateStaticParams() {
+  // Fetch all the slugs 
+  const slugs = await db.getAllStorySlugs();
+
+  // Return mapping of all possible slugs
+  const slugRoutes =  slugs.map((slug: { slug: string }) => {
+    return {
+      params: {
+        slug: slug.slug
+      }
+    }
+  });
+
+  return slugRoutes;
+}
+
+async function Post({ params: { slug } }: Props) {
+
+  // Get the story from the database
+  const story: Story = await db.getStoryBySlug(slug);
+
+  // If the story is not found, return a 404 page
   if (!story) {
     return <div>Story not found</div>;
   }
@@ -18,7 +43,6 @@ export default function StoryPage({ story }: StoryPageProps) {
       <Head>
         <title>{story.title}</title>
         <meta name="description" content={story.content.substring(0, 160)} />
-        {/* Add other metadata tags as needed */}
       </Head>
 
       {/* Increment the views counter */}
@@ -27,40 +51,8 @@ export default function StoryPage({ story }: StoryPageProps) {
       {/* Render the story */}
       <h1>{story.title}</h1>
       <p>{story.content}</p>
-      <a href={`/blog/${story.slug}/edit`}>Edit this story</a>
     </div>
-  );
+  )
 }
 
-// Static data fetching. Is called at build time.
-export const getStaticProps: GetStaticProps = async (context) => {
-  const slug = context.params?.slug as string;
-
-  try {
-    const story = await db.getStoryBySlug(slug);
-    return {
-      props: {
-        story
-      }
-    };
-  } catch (error) {
-    console.error("Error fetching story:", error);
-    return {
-      notFound: true
-    };
-  }
-};
-
-// Static data fetching. Is called at build time.
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await db.getAllStorySlugs();
-  return {
-    paths,
-    fallback: true
-  };
-};
-
-
-
-
-
+export default Post;

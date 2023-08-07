@@ -1,7 +1,5 @@
-import { Key } from "react";
-
 export type Story = {
-  _id: Key;
+  _id: string;
   slug: string;
   title: string;
   content: string;
@@ -11,3 +9,4 @@ export type Story = {
 export type StoryPageProps = {
   story: Story | null;
 };
+
