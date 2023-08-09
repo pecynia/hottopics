@@ -1,6 +1,4 @@
 import { Inter } from 'next/font/google';
-import Head from 'next/head';
-
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -15,10 +13,6 @@ type LayoutProps = {
 const BlogLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <html lang="en">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <body className={inter.className}>
         <div className="max-w-6xl mx-auto px-4">
           <header className="text-center my-8">

@@ -1,6 +1,5 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-
 import { Story, StoryPageProps  } from '../types/story'
 
 
@@ -110,10 +109,10 @@ async function incrementStoryViews(slug: string) {
   
 export default {
     updateStory,
-    getStoryBySlug,
-    incrementStoryViews,  
     getStories,
     getAllStorySlugs,
+    getStoryBySlug,
+    incrementStoryViews,
 }
 
 // -------------------- TRIGGERS --------------------

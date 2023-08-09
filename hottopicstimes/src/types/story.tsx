@@ -7,6 +7,6 @@ export type Story = {
 };
 
 export type StoryPageProps = {
-  story: Story | null;
+story: Story | null;
 };
 
