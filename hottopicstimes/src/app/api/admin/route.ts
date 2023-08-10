@@ -1,14 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import db from '../../../utils/db'
-import { Story } from '../../../types/story'
+import db from '../../utils/db'
+import { Story } from '../../../../typings'
 import { NextResponse } from 'next/server'
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+// The original path was src/app/pages/api/admin/route.ts
+
+export const POST = async (req: Request, res: Response) => {
   if (req.method !== 'POST') {
     return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
   }
 
-  const apiKey = req.headers['x-api-key'] as string
+  const apiKey = req.headers.get('x-api-key')?.toString()
   
   console.log("API Key:", apiKey)
 
@@ -16,11 +18,11 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const story = req.body as Story
+  const story = req.body as unknown as Story
 
   // Validate the story data
   if (!story.title || !story.content || !story.slug) {
-    return res.status(400).json({ error: 'Invalid story data' })
+    return NextResponse.json({ error: 'Invalid story data' }, { status: 400 })
   }
 
   try {

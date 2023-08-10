@@ -1,17 +1,26 @@
 import React from 'react';
+import { Metadata, ResolvingMetadata  } from 'next'
+
+
 import db from '../utils/db'; // Adjust the path to your db module
 
 import ClientSideRoute from '../components/ClientSideRoute';
 
 // Is in typings.d.ts
-import { Story } from '../types/story';
+import { Story } from '../../../typings';
 
 export const revalidate = 30
 
+// Export dynamic metadata
+export async function generateMetadata(): Promise<Metadata> {
+    return {
+        title: 'Blog',
+        description: 'This is a blog page.',
+    };
+}
+
 const BlogPage: React.FC = async () => {
-
-    const stories: Story[] = await db.getStories(); // Adjust this to your actual db function
-
+    const stories: Story[] = await db.getStories()
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {stories.map((story) => (

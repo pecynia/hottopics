@@ -1,10 +1,10 @@
 
 import { Metadata, ResolvingMetadata  } from 'next'
+import { notFound } from 'next/navigation'
 
 import db from '../../utils/db'; 
-import ViewCounter from '../../utils/ViewCounter';
-import { Story } from '../../types/story';
-
+import ViewCounter from './ViewCounter';
+import { Story } from '../../../../typings';
 
 type Props = {
   params: {
@@ -15,19 +15,10 @@ type Props = {
 export const revalidate = 30
 
 export async function generateStaticParams() {
-  // Fetch all the slugs 
-  const slugs = await db.getAllStorySlugs();
-
-  // Return mapping of all possible slugs
-  const slugRoutes =  slugs.map((slug: { slug: string }) => {
-    return {
-      params: {
-        slug: slug.slug
-      }
-    }
-  });
-
-  return slugRoutes;
+  const slugs: string[] = await db.getAllStorySlugs()
+  return slugs.map((slug: string) => ({
+    slug,
+  }))
 }
 
 // Export dynamic metadata
@@ -53,14 +44,8 @@ export async function generateMetadata(
 
 
 async function Post({ params: { slug } }: Props) {
-
-  // Get the story from the database
   const story: Story = await db.getStoryBySlug(slug);
-
-  // If the story is not found, return a 404 page
-  if (!story) {
-    return <div>Story not found</div>;
-  }
+  if (!story) return notFound()
 
   return (
     <div>

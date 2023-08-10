@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-import { Story, StoryPageProps  } from '../types/story'
+import { Story, StoryPageProps  } from '../../../typings'
 
 
 // -------------------- DATABASE --------------------
@@ -53,17 +53,15 @@ async function getStories() {
     return await db.collection('stories').find().toArray()
 }
 
+type StoryFind ={
+    _id: string,
+    slug: string,
+}
 // Function to fetch all story slugs
 async function getAllStorySlugs() {
     const db = await connectToDatabase()
-    const stories = await db.collection('stories').find({}, { projection: { slug: 1 } }).toArray()
-    return stories.map((story: { slug: string }) => {
-        return {
-            params: {
-                slug: story.slug,
-            },
-        }
-    })
+    const foundStories: StoryFind[] = await db.collection('stories').find({}, { projection: { slug: 1 } }).toArray()
+    return foundStories.map((story: StoryFind) => story.slug)
 }
 
 // Function to add a new story to the database
