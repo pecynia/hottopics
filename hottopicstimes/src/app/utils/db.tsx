@@ -66,35 +66,45 @@ async function getAllStorySlugs() {
     })
 }
 
+// Function to add a new story to the database
+async function addStory(newStory: Story) {
+    const db = await connectToDatabase();
+    await db.collection('stories').insertOne(newStory);
+    return {
+        status: 'ok',
+        message: 'Story added successfully',
+    };
+}
+
 // --------------- CACHING AND SERVER-SIDE PROPS ---------------
 
-// const storyCache = new NodeCache({ stdTTL: 3600 }) // Cache for 1 hour
+const storyCache = new NodeCache({ stdTTL: 3600 }) // Cache for 1 hour
 
-// function getEnvVar(key: string): string {
-//     const value = process.env[key]
-//     if (!value) {
-//         throw new Error(`Environment variable ${key} is not set.`)
-//     }
-//     return value
-// }
+function getEnvVar(key: string): string {
+    const value = process.env[key]
+    if (!value) {
+        throw new Error(`Environment variable ${key} is not set.`)
+    }
+    return value
+}
 
-// const STORY_VIEW_THRESHOLD = getEnvVar('STORY_VIEW_THRESHOLD') as unknown as number
+const STORY_VIEW_THRESHOLD = getEnvVar('STORY_VIEW_THRESHOLD') as unknown as number
 
 async function getStoryBySlug(slug: string): Promise<Story> {
     // Try to get the story from the cache first
-    // const cachedStory: Story = storyCache.get(slug) as Story
-    // if (cachedStory) {
-    //   return cachedStory
-    // }
+    const cachedStory: Story = storyCache.get(slug) as Story
+    if (cachedStory) {
+      return cachedStory
+    }
   
     // If the story is not in the cache, get it from the database
     const db = await connectToDatabase()
     const story: Story = await db.collection('stories').findOne({ slug })
   
     // If the story has a high view count, cache it
-    // if (story && story.views > STORY_VIEW_THRESHOLD) {
-    //   storyCache.set(slug, story)
-    // }
+    if (story && story.views > STORY_VIEW_THRESHOLD) {
+      storyCache.set(slug, story)
+    }
   
     return story
   }
@@ -109,6 +119,7 @@ async function incrementStoryViews(slug: string) {
   
 export default {
     updateStory,
+    addStory,
     getStories,
     getAllStorySlugs,
     getStoryBySlug,
