@@ -1,7 +1,9 @@
-import Head from 'next/head';
-import db from '../../../utils/db'; 
-import ViewCounter from '../../../utils/ViewCounter';
-import { Story, StoryPageProps } from '../../../types/story';
+
+import { Metadata, ResolvingMetadata  } from 'next'
+
+import db from '../../utils/db'; 
+import ViewCounter from '../../utils/ViewCounter';
+import { Story } from '../../types/story';
 
 
 type Props = {
@@ -28,6 +30,28 @@ export async function generateStaticParams() {
   return slugRoutes;
 }
 
+// Export dynamic metadata
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata // Parent metadata (can be used to extend the parent metadata, rather than replace)
+): Promise<Metadata> {
+  const slug = params.slug;
+  const story = await db.getStoryBySlug(slug);
+
+  if (!story) {
+    return {
+      title: 'Story not found',
+      description: 'The requested story could not be found.'
+    };
+  }
+
+  return {
+    title: story.title,
+    description: story.content.substring(0, 160),
+  };
+}
+
+
 async function Post({ params: { slug } }: Props) {
 
   // Get the story from the database
@@ -40,11 +64,6 @@ async function Post({ params: { slug } }: Props) {
 
   return (
     <div>
-      <Head>
-        <title>{story.title}</title>
-        <meta name="description" content={story.content.substring(0, 160)} />
-      </Head>
-
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 

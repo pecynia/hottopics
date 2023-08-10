@@ -1,10 +1,10 @@
 import React from 'react';
-import db from '../../utils/db'; // Adjust the path to your db module
+import db from '../utils/db'; // Adjust the path to your db module
 
-import ClientSideRoute from '../../components/ClientSideRoute';
+import ClientSideRoute from '../components/ClientSideRoute';
 
 // Is in typings.d.ts
-import { Story } from '../../types/story';
+import { Story } from '../types/story';
 
 export const revalidate = 30
 
