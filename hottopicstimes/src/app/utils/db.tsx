@@ -66,6 +66,9 @@ async function getAllStorySlugs() {
 
 // Function to add a new story to the database
 async function addStory(newStory: Story) {
+
+    // Convert to HTML and add View object
+
     const db = await connectToDatabase();
     await db.collection('stories').insertOne(newStory);
     return {
