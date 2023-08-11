@@ -13,7 +13,7 @@ data = {
 }
 
 headers = {
-    'x-api-key': 'hoi',
+    'x-api-key': 'hoi',  # This is the old API key
     'Content-Type': 'application/json',
 }
 
