@@ -1,6 +1,7 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-import { Story, StoryPageProps  } from '../../../typings'
+import { Story, StoryPostRequest } from '../../../typings'
+import { generateStory } from './generation/create-story'
 
 
 // -------------------- DATABASE --------------------
@@ -65,12 +66,19 @@ async function getAllStorySlugs() {
 }
 
 // Function to add a new story to the database
-async function addStory(newStory: Story) {
-
-    // Convert to HTML and add View object
-
+async function addStory({ keyword, article }: StoryPostRequest) {
+    const { slug, title, description, content, language } = await generateStory({ keyword, article });
     const db = await connectToDatabase();
-    await db.collection('stories').insertOne(newStory);
+    await db.collection('stories').insertOne({
+        slug,
+        title,
+        description,
+        content,
+        date: new Date().toISOString(),
+        views: 0,
+        language,
+    });
+
     return {
         status: 'ok',
         message: 'Story added successfully',

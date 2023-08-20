@@ -1,5 +1,5 @@
 import db from '../../utils/db'
-import { Story } from '../../../../typings'
+import { StoryPostRequest } from '../../../../typings'
 import { NextResponse } from 'next/server'
 
 async function readStream(stream: ReadableStream): Promise<string> {
@@ -28,19 +28,17 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
   }
   const apiKey = req.headers.get('x-api-key')?.toString()
-  
+
   // Validate the API key
   if (!apiKey || apiKey !== process.env.SECRET_API_KEY) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const storyData = await readStream(req.body!);
-  const story = JSON.parse(storyData) as Story;
-
-  console.log("Story:", story);
+  const story = JSON.parse(storyData) as StoryPostRequest;
 
   // Validate the story data
-  if (!story.title || !story.content || !story.slug) {
+  if (!story.keyword || !story.article) {
     return NextResponse.json({ error: 'Invalid story data' }, { status: 400 })
   }
 

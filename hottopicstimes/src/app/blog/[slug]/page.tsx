@@ -1,8 +1,8 @@
-
 import { Metadata, ResolvingMetadata  } from 'next'
 import { notFound } from 'next/navigation'
 
 import db from '../../utils/db'; 
+import { markdownToHtml } from '../../utils/generation/markdown-to-html'
 import ViewCounter from './ViewCounter';
 import { Story } from '../../../../typings';
 
@@ -45,7 +45,10 @@ export async function generateMetadata(
 
 async function Post({ params: { slug } }: Props) {
   const story: Story = await db.getStoryBySlug(slug);
+
   if (!story) return notFound()
+
+  const content = await markdownToHtml(story.content || '')
 
   return (
     <div>
@@ -54,7 +57,7 @@ async function Post({ params: { slug } }: Props) {
 
       {/* Render the story */}
       <h1>{story.title}</h1>
-      <p>{story.content}</p>
+      <div dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   )
 }
