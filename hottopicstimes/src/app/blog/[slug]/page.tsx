@@ -40,6 +40,8 @@ export async function generateMetadata(
   return {
     title: story.title,
     description: story.description,
+
+    // Is this necessary?
     openGraph: {
       type: 'article',
       title: story.title,
@@ -105,6 +107,7 @@ async function Post({ params: { slug } }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={addBlogJsonLd()}
       />
+
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 
