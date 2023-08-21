@@ -1,4 +1,15 @@
 
+
+
+// TODOS:
+// - Look into submitting a sitemap to Google
+// - Look into adding structured FAQ data to the posts
+// - Look into adding structured data to the posts
+
+
+
+
+
 export function articleFromKeywordArticle(keyword: string, article: string, language: string): string {
     return `
         Create a post for a blog, in Markdown, where you explain the topic of ${keyword} in ${language}.

@@ -5,6 +5,7 @@ import db from '../../utils/db';
 import { markdownToHtml } from '../../utils/generation/markdown-to-html'
 import ViewCounter from './ViewCounter';
 import { Story } from '../../../../typings';
+import StructuredData from '@/app/components/StructuredData';
 
 type Props = {
   params: {
@@ -48,17 +49,32 @@ async function Post({ params: { slug } }: Props) {
 
   if (!story) return notFound()
 
+  // Make structured data
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: story.title,
+    description: story.description,
+    datePublished: story.date,
+    // TODO: Add author
+  }
+
   const content = await markdownToHtml(story.content || '')
 
   return (
-    <div>
+    <>
+      {/* Render structured data */}
+      <StructuredData data={structuredData} />
+      
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 
       {/* Render the story */}
-      <h1>{story.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: content }} />
-    </div>
+      <article>
+        <h1>{story.title}</h1>
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </article>
+    </>
   )
 }
 

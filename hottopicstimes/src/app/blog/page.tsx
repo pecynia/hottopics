@@ -1,5 +1,5 @@
 import React from 'react';
-import { Metadata, ResolvingMetadata  } from 'next'
+import { Metadata  } from 'next'
 
 
 import db from '../utils/db'; // Adjust the path to your db module
