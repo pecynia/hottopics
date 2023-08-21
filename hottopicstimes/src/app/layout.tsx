@@ -11,6 +11,17 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Hot Topics Times',
   description: 'A news site for hot topics',
+  openGraph: {
+    type: 'website',
+    title: 'Hot Topics Times',
+    description: 'A news site for hot topics',
+    url: 'https://www.hottopicstimes.com',
+    images: [],
+    siteName: 'Hot Topics Times',
+    locale: 'en_US',
+    // alternateLocale: 'en_GB',
+    ttl: 30,
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

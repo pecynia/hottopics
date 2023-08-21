@@ -7,6 +7,7 @@ export type Story = {
     content: string;
     language: string;
     views: number;
+    tags: string[];
 };
 
 export type GeneratedStory = {

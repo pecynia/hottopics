@@ -38,7 +38,23 @@ export async function generateMetadata(
 
   return {
     title: story.title,
-    description: story.content.substring(0, 160),
+    description: story.description,
+    openGraph: {
+      type: 'article',
+      title: story.title,
+      description: story.description,
+      url: `https://www.hottopicstimes.com/blog/${story.slug}`,
+      publishedTime: story.date,
+      modifiedTime: story.date,
+      authors: ['Hot Topics Times'],
+      section: 'Blog',
+      tags: story.tags,
+      images: [],
+      siteName: 'Hot Topics Times',
+      locale: 'en_US',
+      // alternateLocale: 'en_GB',
+      ttl: 30,
+    }
   };
 }
 
@@ -48,20 +64,10 @@ async function Post({ params: { slug } }: Props) {
 
   if (!story) return notFound()
 
-  // Make structured data
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: story.title,
-    description: story.description,
-    datePublished: story.date,
-    // TODO: Add author
-  }
-
   const content = await markdownToHtml(story.content || '')
 
   return (
-    <>      
+    <>
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 
@@ -74,4 +80,4 @@ async function Post({ params: { slug } }: Props) {
   )
 }
 
-export default Post;
+export default Post 
