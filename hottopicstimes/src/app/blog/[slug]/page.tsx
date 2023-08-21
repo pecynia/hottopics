@@ -5,7 +5,6 @@ import db from '../../utils/db';
 import { markdownToHtml } from '../../utils/generation/markdown-to-html'
 import ViewCounter from './ViewCounter';
 import { Story } from '../../../../typings';
-import StructuredData from '@/app/components/StructuredData';
 
 type Props = {
   params: {
@@ -62,10 +61,7 @@ async function Post({ params: { slug } }: Props) {
   const content = await markdownToHtml(story.content || '')
 
   return (
-    <>
-      {/* Render structured data */}
-      <StructuredData data={structuredData} />
-      
+    <>      
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 
