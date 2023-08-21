@@ -1,4 +1,5 @@
 import { Metadata, ResolvingMetadata  } from 'next'
+import { ArticleJsonLd } from 'next-seo'
 import { notFound } from 'next/navigation'
 
 import db from '../../utils/db'; 
@@ -54,8 +55,8 @@ export async function generateMetadata(
       locale: 'en_US',
       // alternateLocale: 'en_GB',
       ttl: 30,
-    }
-  };
+    },
+  }
 }
 
 
