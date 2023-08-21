@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import { DefaultSeo } from 'next-seo'
 import { Inter } from 'next/font/google'
 
 import Header from './components/Header'
@@ -27,6 +28,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Use DefaultSeo
+        <DefaultSeo
+          title={metadata.title?.toString()}
+          description={metadata.description?.toString()}
+        /> */}
+
+      </head>
       <body className={inter.className}>
         <Header />
         <Banner />
