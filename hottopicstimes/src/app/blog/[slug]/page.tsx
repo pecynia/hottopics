@@ -1,11 +1,14 @@
+// "use client"
+
 import { Metadata, ResolvingMetadata  } from 'next'
-import { ArticleJsonLd } from 'next-seo'
 import { notFound } from 'next/navigation'
 
-import db from '../../utils/db'; 
-import { markdownToHtml } from '../../utils/generation/markdown-to-html'
-import ViewCounter from './ViewCounter';
-import { Story } from '../../../../typings';
+import db from '@/app/utils/db'; 
+import { addBlogJsonLd } from '@/app/utils/schemas/blog-schema';
+import { markdownToHtml } from '@/app/utils/generation/markdown-to-html'
+import ViewCounter from '@/app/components/ViewCounter';
+import { Story } from '@/app/../../typings';
+import FAQSection from '@/app/components/FaqSection';
 
 type Props = {
   params: {
@@ -65,59 +68,40 @@ export async function generateMetadata(
 async function Post({ params: { slug } }: Props) {
   const story: Story = await db.getStoryBySlug(slug);
 
-  if (!story) return notFound()
+  if (!story) return notFound();
 
-  const content = await markdownToHtml(story.content || '')
-
-  function addBlogJsonLd() {
-    return {
-      __html: `{
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": "https://www.hottopicstimes.com/blog/${story.slug}"
-        },
-        "headline": "${story.title}",
-        "description": "${story.description}",
-        "image": [],
-        "author": {
-          "@type": "Person",
-          "url": "https://www.hottopicstimes.com",
-          "name": "Hot Topics Times"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "Hot Topics Times",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://www.hottopicstimes.com/logo.png"
-          }
-        },
-        "datePublished": "${story.date}",
-        "dateModified": "${story.date}"
-      }
-    `,};
-  }
+  const { content, faqs } = await markdownToHtml(story.content || '');
 
   return (
     <>
       {/* Add JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={addBlogJsonLd()}
+        dangerouslySetInnerHTML={addBlogJsonLd(story)}
       />
 
       {/* Increment the views counter */}
       <ViewCounter slug={story.slug} />
 
       {/* Render the story */}
-      <article>
-        <h1>{story.title}</h1>
+      <article className="p-10">
+        <h1 className="text-2xl mb-5">
+          {story.title}
+        </h1>
+        
+        <div className="flex items-center justify-between text-gray-500 mb-5">
+          <p>{story.description}</p>
+          <p>{story.date}</p>
+        </div>
+        
+        <hr className="mb-5" />
         <div dangerouslySetInnerHTML={{ __html: content }} />
+
+        <hr className="mb-5" />
+        <FAQSection faqs={faqs} />
       </article>
     </>
-  )
+  );
 }
 
 export default Post 

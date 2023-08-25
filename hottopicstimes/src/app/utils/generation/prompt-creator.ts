@@ -3,9 +3,6 @@
 
 // TODOS:
 // - Look into submitting a sitemap to Google
-// - Look into adding structured FAQ data to the posts
-// - Look into adding structured data to the posts
-
 
 
 
@@ -64,6 +61,9 @@ export function articleFromKeywordArticle(keyword: string, article: string, lang
         - JSON strings cannot contain newline characters (\n), and they need to be escaped. To fix the JSON, you should replace actual newlines with the escaped newline sequence (\n).
         - Make sure to only write about 'evergreen' topics, that will not change over time. For example, if you are writing about a specific event, make sure to write about the topic of the event, not the event itself.
         - Make a creative title (don't start with 'Understading keyword')
+        - Make the faq title a ## heading
+        - Make the faq questions a ### heading
+        - Make the faq answers a normal paragraph
 
         Write your response below in JSON format in language ${language}:
     `
