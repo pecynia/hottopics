@@ -6,4 +6,9 @@ const dictionaries = {
   nl: () => import('@/app/../dictionaries/nl.json').then(module => module.default)
 }
 
-export const getDictionary = async (locale: Locale) => dictionaries[locale]()
+export const getDictionary = async (locale: Locale) => {
+  if (!dictionaries[locale]) {
+      throw new Error(`Invalid locale: ${locale}. Expected "en" or "nl".`);
+  }
+  return dictionaries[locale]();
+}

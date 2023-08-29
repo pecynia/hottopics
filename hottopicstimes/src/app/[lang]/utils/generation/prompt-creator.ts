@@ -4,12 +4,11 @@
 // TODOS:
 // - Look into submitting a sitemap to Google
 
+import { Locale } from '@/app/../../i18n.config'
 
-
-
-export function articleFromKeywordArticle(keyword: string, article: string, language: string): string {
+export function articleFromKeywordArticle(keyword: string, article: string, languages: Locale[]): string {
     return `
-        Create a post for a blog, in Markdown, where you explain the topic of ${keyword} in ${language}.
+        Create a post for a blog, in Markdown, where you explain the topic of ${keyword} in the languages ${languages}.
 
         Write your post based on possible questions that might arrive surrouding the keyword in the article below.
         These should be focused on Google's E-E-A-T guidelines, but dont talk about them explicitly. Furthermore, it
@@ -43,16 +42,24 @@ export function articleFromKeywordArticle(keyword: string, article: string, lang
         ---
 
         Write your post below in Markdown, being careful to follow the instructions above. Furthermore, put
-        your answer in JSON format, containing the following fields:
+        your answer in JSON format, containing the following fields for each language.
         - content (in Markdown)
         - description (short description of the post)
         - title
         - slug (the URL name of the post, make this something sensible and specific)
-        - language
         
-        Your response should start with
+        Your response should look like
         {
-            "slug": 
+            "language-1": {
+                "content": "Markdown content",
+                "description": "Short description",
+                "title": "Title",
+                "slug": "slug"
+            },
+            "language-2": {
+                ...
+            },
+            ...
 
         and end with
         }
@@ -65,6 +72,6 @@ export function articleFromKeywordArticle(keyword: string, article: string, lang
         - Make the faq questions a ### heading
         - Make the faq answers a normal paragraph
 
-        Write your response below in JSON format in language ${language}:
+        Write your response below in JSON format for the languages ${languages}:
     `
 }

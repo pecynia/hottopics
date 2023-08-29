@@ -8,7 +8,7 @@ import db from '@/app/[lang]/utils/db'
 import { addBlogJsonLd } from '@/app/[lang]/utils/schemas/blog-schema'
 import { markdownToHtml } from '@/app/[lang]/utils/generation/markdown-to-html'
 import ViewCounter from '@/app/[lang]/components/ViewCounter'
-import { Story, StoryLangRequest, StoryContent } from '@/app/../../typings'
+import { StoryLangRequest, StoryContent } from '@/app/../../typings'
 import FAQSection from '@/app/[lang]/components/FaqSection'
 
 type Props = {
@@ -73,7 +73,7 @@ async function Post({ params: { slug, lang } }: Props) {
 
   if (!story) return notFound();
 
-  const { content, faqs } = await markdownToHtml(story.content || '');
+  const { content, faqs } = await markdownToHtml(story.content, lang || '');
 
   return (
     <>

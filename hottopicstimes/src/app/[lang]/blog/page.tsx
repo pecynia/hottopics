@@ -22,11 +22,16 @@ export default async function BlogPage({
 }: {
     params: { lang: Locale }
 }): Promise<React.ReactElement> {
-    const stories: StoryContent[] = await db.getStories(lang);
+
+    const stories: Story[] = await db.getStories(lang)
+    const storyContents = stories.map((story: Story) => {
+        return story[lang] as StoryContent
+    })
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {stories.map((story) => (
-                <ClientSideRoute key={story.slug} route={`/blog/${story.slug}`}>
+            {storyContents.map((story) => (
+                <ClientSideRoute key={story.slug} route={`/${lang}/blog/${story.slug}`}>
                     <div className="block p-8 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors duration-300">
                         <h3 className="text-xl font-bold mb-4">{story.title}</h3>
                         <p className="text-gray-600 mb-4">{story.date}</p>

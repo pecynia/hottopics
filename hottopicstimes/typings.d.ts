@@ -2,42 +2,50 @@ import { Locale } from '@/app/../../i18n.config'
 
 
 type StoryContent = {
-    tags: string | string[] | null | undefined;
-    slug: string,
-    title: string,
-    description: string,
-    content: string,
-    date: string,
+    tags: string | string[] | null | undefined
+    slug: string
+    title: string
+    description: string
+    content: string
+    date: string
     views: number
 }
   
 type Story = {
-    _id: string;
-    [key: string]: StoryContent | string | undefined;
+    _id: string
+    [key: string]: StoryContent | string | undefined
 }
 
 type StoryLangRequest = {
-    _id: string;
-    lang: Locale;
+    _id: string
+    lang: Locale
 }
 
-
 export type GeneratedStory = {
-    slug: string;
-    title: string;
-    description: string;
-    content: string;
-    language: string;
-};
+    [key: string]: {
+        slug: string
+        title: string
+        description: string
+        content: string
+        date: string
+        views: number
+    }
+}
+
+export type StoryAPIRequest = {
+    keyword: string
+    article: string
+}
 
 export type StoryPostRequest = {
-    keyword: string;
-    article: string;
-};
+    keyword: string
+    article: string
+    languages: Locale[]
+}
   
 export type StoryPageProps = {
-    story: Story | null;
-};
+    story: Story | null
+}
   
   
   

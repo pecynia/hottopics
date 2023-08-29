@@ -1,6 +1,6 @@
-import { Story } from '../../../../typings';
+import { StoryContent } from '@/app/../../typings';
 
-export function addBlogJsonLd(story: Story) {
+export function addBlogJsonLd(story: StoryContent) {
     return {
       __html: `{
         "@context": "https://schema.org",

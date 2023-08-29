@@ -1,8 +1,11 @@
 import { remark } from 'remark'
 import { visit } from 'unist-util-visit'
 import html from 'remark-html'
+import { Locale } from '@/app/../../../i18n.config'
+import { getDictionary } from '@/lib/dictionary'
 
-export async function markdownToHtml(markdown: string) {
+
+export async function markdownToHtml(markdown: string, lang: Locale) {
   let faqs: { question: string; answer: string }[] = []
   const result = await remark()
     .use([(tree) => addFAQTag(tree, faqs) as any, html])
@@ -15,7 +18,8 @@ export async function markdownToHtml(markdown: string) {
   htmlString = htmlString.replace(/ class="user-content-/g, ' class="')
 
   // Remove everything after the FAQ (this can be FAQ or Frequently Asked Questions)
-  const faqIndex = htmlString.indexOf('FAQ') !== -1 ? htmlString.indexOf('FAQ') : htmlString.indexOf('Frequently Asked Questions');
+  const { faq } = await getDictionary(lang)
+  const faqIndex = htmlString.indexOf(faq.short) !== -1 ? htmlString.indexOf(faq.short) : htmlString.indexOf(faq.title)
   if (faqIndex !== -1) {
     htmlString = htmlString.substring(0, faqIndex)
   }

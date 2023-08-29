@@ -1,7 +1,15 @@
 {
     "navigation": {
+      "title": "Hot Topics Times",
       "home": "Home",
       "about": "About"
+    },
+    "banner": {
+      "description": "This is the banner description"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "short": "FAQ"
     },
     "page": {
       "home": {

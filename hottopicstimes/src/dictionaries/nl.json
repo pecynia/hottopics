@@ -1,7 +1,15 @@
 {
     "navigation": {
+      "title": "Hot Topics Times",
       "home": "Thuis",
       "about": "Over ons"
+    },
+    "banner": {
+      "description": "Dit is een voorbeeld van een banner"
+    },
+    "faq": {
+      "title": "Veelgestelde vragen",
+      "short": "FAQ"
     },
     "page": {
       "home": {

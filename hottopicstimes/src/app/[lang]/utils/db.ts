@@ -1,6 +1,6 @@
-import { MongoClient, ServerApiVersion } from 'mongodb'
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-import { Story, StoryContent, StoryPostRequest } from '@/app/../../../typings'
+import { Story, StoryContent, StoryPostRequest, StoryLangRequest } from '@/app/../../../typings'
 import { generateStory } from '@/app/[lang]/utils/generation/create-story'
 import { Locale } from '@/app/../../i18n.config'
 
@@ -48,13 +48,23 @@ async function updateStory(slug: string, updatedStory: any) {
     return await db.collection('stories').updateOne({ slug }, { $set: updatedStory })
 }
 
-// Function to fetch all stories
-async function getStories( lang: Locale) {
-    const db = await connectToDatabase()
+async function getStories(lang: Locale) {
+    const db = await connectToDatabase();
 
-    // Convert array to Story objects
-    return await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }).toArray()
+    // Fetch stories that have the given language property (e.g., "en.slug" exists)
+    const stories = await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }).toArray();
+
+    // Restructure the results to only contain the specified language content
+    const formattedStories = stories.map((story: Story) => {
+        return {
+            _id: story._id,
+            [lang]: story[lang]
+        };
+    }) as Story[]
+
+    return formattedStories;
 }
+
 
 type StoryFind ={
     _id: string,
@@ -76,25 +86,21 @@ async function getAllStorySlugs(lang: Locale) {
     })
 }
 
-// Function to add a new story to the database
-async function addStory({ keyword, article }: StoryPostRequest) {
-    const { slug, title, description, content, language } = await generateStory({ keyword, article });
+async function addStory({ keyword, article, languages }: StoryPostRequest) {
+    const generatedStory = await generateStory({ keyword, article, languages })
     const db = await connectToDatabase();
+    
     await db.collection('stories').insertOne({
-        slug,
-        title,
-        description,
-        content,
-        date: new Date().toISOString(),
-        views: 0,
-        language,
+      ...generatedStory,
+      _id: new ObjectId().toString()
     });
-
+  
     return {
-        status: 'ok',
-        message: 'Story added successfully',
+      status: 'ok',
+      message: 'Story added successfully',
     };
-}
+  }
+  
 
 // --------------- CACHING AND SERVER-SIDE PROPS ---------------
 
@@ -120,9 +126,9 @@ async function getStoryBySlug(slug: string, lang: Locale): Promise<StoryContent>
   
     // If the story is not in the cache, get it from the database
     const db = await connectToDatabase()
-    const story: Story = await db.collection('stories').findOne({ slug })
-    const storyContent = story[lang] as StoryContent 
-
+    const story: Story = await db.collection('stories').findOne({ [`${lang}.slug`]: slug })
+    const storyContent = story && story[lang] as StoryContent
+    
     // If the story has a high view count, cache it
     if (story && storyContent.views > STORY_VIEW_THRESHOLD) {
       storyCache.set(slug, story)

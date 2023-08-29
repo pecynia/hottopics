@@ -1,6 +1,8 @@
-import db from '../../utils/db'
-import { StoryPostRequest } from '../../../../typings'
+import db from '@/app/[lang]/utils/db'
+import { StoryAPIRequest } from '@/app/../../typings'
 import { NextResponse } from 'next/server'
+import { Locale,  i18n } from '@/app/../../i18n.config'
+
 
 async function readStream(stream: ReadableStream): Promise<string> {
   const reader = stream.getReader();
@@ -35,7 +37,7 @@ export const POST = async (req: Request) => {
   }
 
   const storyData = await readStream(req.body!);
-  const story = JSON.parse(storyData) as StoryPostRequest;
+  const story = JSON.parse(storyData) as StoryAPIRequest;
 
   // Validate the story data
   if (!story.keyword || !story.article) {
@@ -44,7 +46,7 @@ export const POST = async (req: Request) => {
 
   // Push it to the database
   try {
-    const { status, message } = await db.addStory(story)
+    const { status, message } = await db.addStory({ ...story, languages: i18n.locales as unknown as Locale[] })
     return NextResponse.json({ status, message }, { status: 200 })
   } catch (error) {
     console.error("Error adding story:", error)

@@ -35,7 +35,7 @@ export default async function Home({
       <section>
         <h1 className='text-3xl'>{page.home.title}</h1>
         <p>{page.home.description}</p>
-        <Link href='/blog'>
+        <Link href='/[lang]/blog' as={`/${lang}/blog`}>
           <div className='border border-black p-4 max-w-xs'>
             <h2 className='text-xl'>{page.home.button}</h2>
           </div>
