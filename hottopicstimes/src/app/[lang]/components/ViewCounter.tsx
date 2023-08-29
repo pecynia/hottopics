@@ -1,4 +1,4 @@
-import db from '../utils/db';
+import db from '@/app/[lang]/utils/db';
 
 type ViewCounterProps = {
   slug: string;

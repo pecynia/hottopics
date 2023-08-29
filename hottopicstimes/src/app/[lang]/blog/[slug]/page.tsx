@@ -3,26 +3,30 @@
 import { Metadata, ResolvingMetadata  } from 'next'
 import { notFound } from 'next/navigation'
 
-import db from '@/app/utils/db'; 
-import { addBlogJsonLd } from '@/app/utils/schemas/blog-schema';
-import { markdownToHtml } from '@/app/utils/generation/markdown-to-html'
-import ViewCounter from '@/app/components/ViewCounter';
-import { Story } from '@/app/../../typings';
-import FAQSection from '@/app/components/FaqSection';
+import { Locale } from '@/app/../../i18n.config'
+import db from '@/app/[lang]/utils/db'
+import { addBlogJsonLd } from '@/app/[lang]/utils/schemas/blog-schema'
+import { markdownToHtml } from '@/app/[lang]/utils/generation/markdown-to-html'
+import ViewCounter from '@/app/[lang]/components/ViewCounter'
+import { Story, StoryLangRequest, StoryContent } from '@/app/../../typings'
+import FAQSection from '@/app/[lang]/components/FaqSection'
 
 type Props = {
   params: {
     slug: string,
+    lang: Locale
   }
 }
 
 export const revalidate = 30
 
-export async function generateStaticParams() {
-  const slugs: string[] = await db.getAllStorySlugs()
-  return slugs.map((slug: string) => ({
-    slug,
-  }))
+export async function generateStaticParams({ params }: Props): Promise<StoryLangRequest[]> {
+  const storyData = await db.getAllStorySlugs(params.lang);
+  return storyData.map((story) => ({
+    _id: story._id,
+    slug: story.slug,
+    lang: params.lang,
+  }));
 }
 
 // Export dynamic metadata
@@ -31,7 +35,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata // Parent metadata (can be used to extend the parent metadata, rather than replace)
 ): Promise<Metadata> {
   const slug = params.slug;
-  const story = await db.getStoryBySlug(slug);
+  const story = await db.getStoryBySlug(slug, params.lang);
 
   if (!story) {
     return {
@@ -57,16 +61,15 @@ export async function generateMetadata(
       tags: story.tags,
       images: [],
       siteName: 'Hot Topics Times',
-      locale: 'en_US',
-      // alternateLocale: 'en_GB',
+      locale: params.lang,
       ttl: 30,
     },
   }
 }
 
 
-async function Post({ params: { slug } }: Props) {
-  const story: Story = await db.getStoryBySlug(slug);
+async function Post({ params: { slug, lang } }: Props) {
+  const story: StoryContent = await db.getStoryBySlug(slug, lang);
 
   if (!story) return notFound();
 

@@ -1,6 +1,6 @@
 import OpenAI from "openai"
-import { articleFromKeywordArticle } from "./prompt-creator"
-import { GeneratedStory, StoryPostRequest } from '../../../../typings'
+import { articleFromKeywordArticle } from "@/app/[lang]/utils/generation/prompt-creator"
+import { GeneratedStory, StoryPostRequest } from '@/app/../../../typings'
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

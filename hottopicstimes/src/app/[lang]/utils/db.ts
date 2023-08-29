@@ -1,7 +1,9 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-import { Story, StoryPostRequest } from '../../../typings'
-import { generateStory } from './generation/create-story'
+import { Story, StoryContent, StoryPostRequest } from '@/app/../../../typings'
+import { generateStory } from '@/app/[lang]/utils/generation/create-story'
+import { Locale } from '@/app/../../i18n.config'
+
 
 
 // -------------------- DATABASE --------------------
@@ -58,11 +60,20 @@ type StoryFind ={
     _id: string,
     slug: string,
 }
-// Function to fetch all story slugs
-async function getAllStorySlugs() {
+// Function to fetch all story slugs for a given language
+async function getAllStorySlugs(lang: Locale) {
     const db = await connectToDatabase()
-    const foundStories: StoryFind[] = await db.collection('stories').find({}, { projection: { slug: 1 } }).toArray()
-    return foundStories.map((story: StoryFind) => story.slug)
+
+    // Use the dot notation to query nested fields
+    const foundStories: Story[] = await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }, { projection: { [`${lang}.slug`]: 1 } }).toArray()
+
+    return foundStories.map((story: Story) => {
+        const storyContent = story[lang] as StoryContent  // Here's the type assertion
+        return {
+            _id: story._id,
+            slug: storyContent.slug,
+        }
+    })
 }
 
 // Function to add a new story to the database
@@ -99,23 +110,25 @@ function getEnvVar(key: string): string {
 
 const STORY_VIEW_THRESHOLD = getEnvVar('STORY_VIEW_THRESHOLD') as unknown as number
 
-async function getStoryBySlug(slug: string): Promise<Story> {
+async function getStoryBySlug(slug: string, lang: Locale): Promise<StoryContent> {
     // Try to get the story from the cache first
     const cachedStory: Story = storyCache.get(slug) as Story
+    const cachedStoryContent = cachedStory && cachedStory[lang] as StoryContent
     if (cachedStory) {
-      return cachedStory
+      return cachedStoryContent
     }
   
     // If the story is not in the cache, get it from the database
     const db = await connectToDatabase()
     const story: Story = await db.collection('stories').findOne({ slug })
-  
+    const storyContent = story[lang] as StoryContent 
+
     // If the story has a high view count, cache it
-    if (story && story.views > STORY_VIEW_THRESHOLD) {
+    if (story && storyContent.views > STORY_VIEW_THRESHOLD) {
       storyCache.set(slug, story)
     }
   
-    return story
+    return storyContent
   }
   
 

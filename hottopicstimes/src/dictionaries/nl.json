@@ -1,0 +1,17 @@
+{
+    "navigation": {
+      "home": "Thuis",
+      "about": "Over ons"
+    },
+    "page": {
+      "home": {
+        "title": "Welkom bij de startpagina",
+        "description": "Dit is de startpagina",
+        "button": "Klik hier"
+      },
+      "about": {
+        "title": "Welkom bij de over ons pagina",
+        "description": "Dit is de over ons pagina"
+      }
+    }
+  }
