@@ -3,7 +3,7 @@ import { Metadata  } from 'next'
 
 import db from '@/app/[lang]/utils/db'
 import ClientSideRoute from '@/app/[lang]/components/ClientSideRoute'
-import { Story } from '@/app/../../../typings'
+import { Story, StoryContent } from '@/app/../../../typings'
 import { Locale } from '@/app/../../i18n.config'
 
 
@@ -22,7 +22,7 @@ export default async function BlogPage({
 }: {
     params: { lang: Locale }
 }): Promise<React.ReactElement> {
-    const stories: Story[] = await db.getStories()
+    const stories: StoryContent[] = await db.getStories(lang);
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {stories.map((story) => (

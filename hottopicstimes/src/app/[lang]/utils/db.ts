@@ -49,11 +49,11 @@ async function updateStory(slug: string, updatedStory: any) {
 }
 
 // Function to fetch all stories
-async function getStories() {
+async function getStories( lang: Locale) {
     const db = await connectToDatabase()
 
     // Convert array to Story objects
-    return await db.collection('stories').find().toArray()
+    return await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }).toArray()
 }
 
 type StoryFind ={
