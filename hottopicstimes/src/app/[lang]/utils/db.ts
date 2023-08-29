@@ -71,7 +71,7 @@ type StoryFind ={
     slug: string,
 }
 // Function to fetch all story slugs for a given language
-async function getAllStorySlugs(lang: Locale) {
+async function getAllStorySlugs(lang: Locale): Promise<StoryFind[]> {
     const db = await connectToDatabase()
 
     // Use the dot notation to query nested fields
