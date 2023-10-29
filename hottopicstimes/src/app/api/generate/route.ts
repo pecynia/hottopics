@@ -5,6 +5,8 @@ import { Locale,  i18n } from '@/app/../../i18n.config'
 
 export const runtime = 'edge'
 
+export const revalidate = 0
+
 async function readStream(stream: ReadableStream): Promise<string> {
   const reader = stream.getReader()
   let chunks: Uint8Array[] = []
