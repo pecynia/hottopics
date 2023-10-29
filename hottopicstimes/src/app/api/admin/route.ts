@@ -25,9 +25,8 @@ async function readStream(stream: ReadableStream): Promise<string> {
   return new TextDecoder().decode(concatenated);
 }
 
-export const config = {
-  runtime: "edge",
-}
+export const runtime = 'edge'
+
 
 export const POST = async (req: Request) => {
   if (req.method !== 'POST') {
