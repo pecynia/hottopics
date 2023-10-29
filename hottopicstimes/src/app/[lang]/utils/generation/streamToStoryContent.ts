@@ -36,11 +36,12 @@ export async function streamToStoryContent(stream: ReadableStream): Promise<any>
         }
       });
 
+    console.log("Combined content:", combinedContent);
+
     try {
         return JSON.parse(combinedContent);
     } catch (err) {
         console.error("Error parsing combined content:", err);
-        // Return a default value or handle error as required
         return null;
     }
 }
