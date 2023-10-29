@@ -21,12 +21,12 @@ type Props = {
 export const revalidate = 30
 
 export async function generateStaticParams({ params }: Props): Promise<StoryLangRequest[]> {
-  const storyData = await db.getAllStorySlugs(params.lang);
+  const storyData = await db.getAllStorySlugs(params.lang)
   return storyData.map((story) => ({
     _id: story._id,
     slug: story.slug,
     lang: params.lang,
-  }));
+  }))
 }
 
 // Export dynamic metadata
@@ -34,14 +34,14 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata // Parent metadata (can be used to extend the parent metadata, rather than replace)
 ): Promise<Metadata> {
-  const slug = params.slug;
-  const story = await db.getStoryBySlug(slug, params.lang);
+  const slug = params.slug
+  const story = await db.getStoryBySlug(slug, params.lang)
 
   if (!story) {
     return {
       title: 'Story not found',
       description: 'The requested story could not be found.'
-    };
+    }
   }
 
   return {
@@ -69,11 +69,11 @@ export async function generateMetadata(
 
 
 async function Post({ params: { slug, lang } }: Props) {
-  const story: StoryContent = await db.getStoryBySlug(slug, lang);
+  const story: StoryContent = await db.getStoryBySlug(slug, lang)
 
-  if (!story) return notFound();
+  if (!story) return notFound()
 
-  const { content, faqs } = await markdownToHtml(story.content, lang || '');
+  const { content, faqs } = await markdownToHtml(story.content, lang || '')
 
   return (
     <>
@@ -104,7 +104,7 @@ async function Post({ params: { slug, lang } }: Props) {
         <FAQSection faqs={faqs} />
       </article>
     </>
-  );
+  )
 }
 
 export default Post 

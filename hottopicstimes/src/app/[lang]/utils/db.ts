@@ -49,20 +49,20 @@ async function updateStory(slug: string, updatedStory: any) {
 }
 
 async function getStories(lang: Locale) {
-    const db = await connectToDatabase();
+    const db = await connectToDatabase()
 
     // Fetch stories that have the given language property (e.g., "en.slug" exists)
-    const stories = await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }).toArray();
+    const stories = await db.collection('stories').find({ [`${lang}.slug`]: { $exists: true } }).toArray()
 
     // Restructure the results to only contain the specified language content
     const formattedStories = stories.map((story: Story) => {
         return {
             _id: story._id,
             [lang]: story[lang]
-        };
+        }
     }) as Story[]
 
-    return formattedStories;
+    return formattedStories
 }
 
 
@@ -87,17 +87,17 @@ async function getAllStorySlugs(lang: Locale): Promise<StoryFind[]> {
 }
 
 async function addStory(generatedStory: GeneratedStory) {
-    const db = await connectToDatabase();
+    const db = await connectToDatabase()
     
     await db.collection('stories').insertOne({
       ...generatedStory,
       _id: new ObjectId().toString()
-    });
+    })
   
     return {
       status: 'ok',
       message: 'Story added successfully',
-    };
+    }
 }
 
 
@@ -157,18 +157,18 @@ export default {
 
 
 // const db = await connectToDatabase()
-// const collection = db.collection('stories');
+// const collection = db.collection('stories')
 
-// const changeStream = collection.watch();
+// const changeStream = collection.watch()
 
-// changeStream.on('change', (next: { operationType: string; fullDocument: any }) => {
+// changeStream.on('change', (next: { operationType: string fullDocument: any }) => {
 //     // Handle the change event
 //     if (next.operationType === 'insert') {
-//         const newStory = next.fullDocument;
+//         const newStory = next.fullDocument
 //         // Trigger the webhook endpoint to regenerate the page
 //         fetch('/api/regenerate', {
 //             method: 'POST',
 //             body: JSON.stringify(newStory),
-//         });
+//         })
 //     }
-// });
+// })

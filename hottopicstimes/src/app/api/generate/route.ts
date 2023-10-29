@@ -1,4 +1,4 @@
-import { StoryAPIRequest } from '@/app/../../typings'
+import { GeneratedStory, StoryAPIRequest } from '@/app/../../typings'
 import { NextResponse } from 'next/server'
 import { generateStory } from '@/app/[lang]/utils/generation/create-story'
 import { Locale,  i18n } from '@/app/../../i18n.config'
@@ -6,24 +6,24 @@ import { Locale,  i18n } from '@/app/../../i18n.config'
 export const runtime = 'edge'
 
 async function readStream(stream: ReadableStream): Promise<string> {
-  const reader = stream.getReader();
-  let chunks: Uint8Array[] = [];
+  const reader = stream.getReader()
+  let chunks: Uint8Array[] = []
   while (true) {
-    const { done, value } = await reader.read();
+    const { done, value } = await reader.read()
     if (done) {
-      break;
+      break
     }
     if (value) {
-      chunks.push(value);
+      chunks.push(value)
     }
   }
-  const concatenated = new Uint8Array(chunks.reduce((acc, val) => acc + val.length, 0));
-  let offset = 0;
+  const concatenated = new Uint8Array(chunks.reduce((acc, val) => acc + val.length, 0))
+  let offset = 0
   for (let chunk of chunks) {
-    concatenated.set(chunk, offset);
-    offset += chunk.length;
+    concatenated.set(chunk, offset)
+    offset += chunk.length
   }
-  return new TextDecoder().decode(concatenated);
+  return new TextDecoder().decode(concatenated)
 }
 
 export const POST = async (req: Request) => {
@@ -37,8 +37,8 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const storyData = await readStream(req.body!);
-  const story = JSON.parse(storyData) as StoryAPIRequest;
+  const storyData = await readStream(req.body!)
+  const story = JSON.parse(storyData) as StoryAPIRequest
 
   // Validate the story data
   if (!story.keyword || !story.article) {
@@ -46,18 +46,22 @@ export const POST = async (req: Request) => {
   }
 
   // Generate the story
-  const generatedStory = await generateStory({ ...story, languages: i18n.locales as unknown as Locale[] });
+  const generatedStory = await generateStory({ ...story, languages: i18n.locales as unknown as Locale[] }) as GeneratedStory
+
+  console.log("Generated story in API", generatedStory)
+
+  console.log("Adding story to database")
 
   // Call the addstory API to store the generated story
-  const response = await fetch("/api/addstory", {
+  const response = await fetch(`${process.env.API_URL}/api/addstory`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "x-api-key": process.env.SECRET_API_KEY
     },
     body: JSON.stringify(generatedStory)
-  });
+  })
 
-  const result = await response.json();
-  return NextResponse.json(result, { status: response.status });
+  const result = await response.json()
+  return NextResponse.json(result, { status: response.status })
 }

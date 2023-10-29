@@ -21,6 +21,22 @@ type StoryLangRequest = {
     lang: Locale
 }
 
+export type PreSingleStory = {
+    slug: string
+    title: string
+    description: string
+    content: string
+}
+
+export type PreGeneratedStory = {
+    [key: string]: {
+        slug: string
+        title: string
+        description: string
+        content: string
+    }
+}
+
 export type GeneratedStory = {
     [key: string]: {
         slug: string

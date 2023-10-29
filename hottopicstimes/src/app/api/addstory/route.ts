@@ -10,7 +10,7 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const story = await req.json() as GeneratedStory;
+  const story = await req.json() as GeneratedStory
 
   try {
     const { status, message } = await db.addStory(story)

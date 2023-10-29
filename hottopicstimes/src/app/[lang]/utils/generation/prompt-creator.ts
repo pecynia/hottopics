@@ -4,7 +4,7 @@
 // TODOS:
 // - Look into submitting a sitemap to Google
 
-import { Locale } from "@/app/../../i18n.config";
+import { Locale } from "@/app/../../i18n.config"
 
 export function articleFromKeywordArticle(keyword: string, article: string, languages: Locale[]): string {
     return `
