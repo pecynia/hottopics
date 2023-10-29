@@ -25,6 +25,10 @@ async function readStream(stream: ReadableStream): Promise<string> {
   return new TextDecoder().decode(concatenated);
 }
 
+export const config = {
+  runtime: "edge",
+}
+
 export const POST = async (req: Request) => {
   if (req.method !== 'POST') {
     return NextResponse.json({ error: 'Method not allowed' }, { status: 405 })
