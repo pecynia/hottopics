@@ -9,11 +9,6 @@ export async function generateStory({ keyword, article, languages }: StoryPostRe
     
     const baseStoryContent = await streamToStoryContent(stream) as PreGeneratedStory
 
-    console.log("Base story content:", baseStoryContent)
-    console.log("Keys in baseStoryContent:", Object.keys(baseStoryContent));
-    console.log("Languages:", languages)
-    console.log("Base story content for first language:", baseStoryContent[languages[0]])
-
     const generatedStory: GeneratedStory = {}
     languages.forEach(lang => {
         const contentForLang = baseStoryContent[lang] as PreSingleStory
@@ -23,8 +18,6 @@ export async function generateStory({ keyword, article, languages }: StoryPostRe
             views: 0
         }
     })
-
-    console.log("Generated story:", generatedStory)
-    
+        
     return generatedStory
 }

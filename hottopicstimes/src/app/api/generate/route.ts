@@ -48,10 +48,6 @@ export const POST = async (req: Request) => {
   // Generate the story
   const generatedStory = await generateStory({ ...story, languages: i18n.locales as unknown as Locale[] }) as GeneratedStory
 
-  console.log("Generated story in API", generatedStory)
-
-  console.log("Adding story to database")
-
   // Call the addstory API to store the generated story
   const response = await fetch(`${process.env.API_URL}/api/addstory`, {
     method: "POST",

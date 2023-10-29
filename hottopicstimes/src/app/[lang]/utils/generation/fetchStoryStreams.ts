@@ -1,10 +1,8 @@
 export async function fetchStoryStream(prompt: string): Promise<ReadableStream> {
-  const encoder = new TextEncoder()
   const payload = {
     model: "gpt-4",
     messages: [{ role: "system", content: prompt }],
     stream: true,
-    // ... other parameters
   }
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
