@@ -1,8 +1,9 @@
-import db from '@/app/[lang]/utils/db'
 import { StoryAPIRequest } from '@/app/../../typings'
 import { NextResponse } from 'next/server'
+import { generateStory } from '@/app/[lang]/utils/generation/create-story'
 import { Locale,  i18n } from '@/app/../../i18n.config'
 
+export const runtime = 'edge'
 
 async function readStream(stream: ReadableStream): Promise<string> {
   const reader = stream.getReader();
@@ -44,12 +45,19 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Invalid story data' }, { status: 400 })
   }
 
-  // Push it to the database
-  try {
-    const { status, message } = await db.addStory({ ...story, languages: i18n.locales as unknown as Locale[] })
-    return NextResponse.json({ status, message }, { status: 200 })
-  } catch (error) {
-    console.error("Error adding story:", error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+  // Generate the story
+  const generatedStory = await generateStory({ ...story, languages: i18n.locales as unknown as Locale[] });
+
+  // Call the addstory API to store the generated story
+  const response = await fetch("/api/addstory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.SECRET_API_KEY
+    },
+    body: JSON.stringify(generatedStory)
+  });
+
+  const result = await response.json();
+  return NextResponse.json(result, { status: response.status });
 }

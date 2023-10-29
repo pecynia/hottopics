@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb'
 import NodeCache from 'node-cache'
-import { Story, StoryContent, StoryPostRequest, StoryLangRequest } from '@/app/../../../typings'
+import { Story, StoryContent, StoryPostRequest, StoryLangRequest, GeneratedStory } from '@/app/../../../typings'
 import { generateStory } from '@/app/[lang]/utils/generation/create-story'
 import { Locale } from '@/app/../../i18n.config'
 
@@ -86,8 +86,7 @@ async function getAllStorySlugs(lang: Locale): Promise<StoryFind[]> {
     })
 }
 
-async function addStory({ keyword, article, languages }: StoryPostRequest) {
-    const generatedStory = await generateStory({ keyword, article, languages })
+async function addStory(generatedStory: GeneratedStory) {
     const db = await connectToDatabase();
     
     await db.collection('stories').insertOne({
@@ -99,8 +98,8 @@ async function addStory({ keyword, article, languages }: StoryPostRequest) {
       status: 'ok',
       message: 'Story added successfully',
     };
-  }
-  
+}
+
 
 // --------------- CACHING AND SERVER-SIDE PROPS ---------------
 
