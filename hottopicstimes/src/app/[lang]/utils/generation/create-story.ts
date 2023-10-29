@@ -6,6 +6,8 @@ import { streamToStoryContent } from "@/app/[lang]/utils/generation/streamToStor
 export async function generateStory({ keyword, article, languages }: StoryPostRequest): Promise<GeneratedStory> {
     const prompt = articleFromKeywordArticle(keyword, article, languages)
     const stream = await fetchStoryStream(prompt)
+
+    console.log("Getting stream success")
     
     const baseStoryContent = await streamToStoryContent(stream) as PreGeneratedStory
 
@@ -18,6 +20,6 @@ export async function generateStory({ keyword, article, languages }: StoryPostRe
             views: 0
         }
     })
-        
+
     return generatedStory
 }
