@@ -9,7 +9,7 @@ export async function generateStory({ keyword, article, languages }: StoryPostRe
 
     console.log("Getting stream success")
     
-    const baseStoryContent = await streamToStoryContent(stream) as PreGeneratedStory
+    const baseStoryContent = await streamToStoryContent(stream)! as PreGeneratedStory
 
     const generatedStory: GeneratedStory = {}
     languages.forEach(lang => {

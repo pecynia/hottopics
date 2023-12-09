@@ -3,6 +3,8 @@ import { Metadata, ResolvingMetadata  } from 'next'
 
 import { Locale } from '@/app/../../i18n.config'
 import { getDictionary } from '@/lib/dictionary'
+import Image from 'next/image'
+import logo from './/../../../public/logo.png'
 
 export async function generateMetadata(
   { params }: { params: { lang: Locale } }, // The params for the page
@@ -33,14 +35,19 @@ export default async function Home({
     
     return (
       <section>
-        <h1 className='text-3xl'>{page.home.title}</h1>
+        {/* <h1 className='text-3xl'>{page.home.title}</h1>
         <p>{page.home.description}</p>
         <Link href='/[lang]/blog' as={`/${lang}/blog`}>
           <div className='border border-black p-4 max-w-xs'>
             <h2 className='text-xl'>{page.home.button}</h2>
           </div>
-        </Link>
-
+        </Link> */}
+              <Image 
+          src='/logo.png'
+          alt="Image" 
+          fill
+          className="object-cover object-center"
+        />
       </section>
   )
 }
